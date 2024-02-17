@@ -1,32 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropertyCard from '../PropertyCard';
 import './PropertyListing.scss';
 
-const DUMMY_PROPERTY = {
-    id: 73864112,
-    bedrooms: 3,
-    summary: 'Property 1 Situated moments from the River Thames in Old Chelsea...',
-    displayAddress: '1 CHEYNE WALK, CHELSEA, SW3',
-    propertyType: 'Flat',
-    price: 1950000,
-    branchName: 'M2 Property, London',
-    propertyUrl: '/property-for-sale/property-73864112.html',
-    contactUrl: '/property-for-sale/contactBranch.html?propertyId=73864112',
-    propertyTitle: '3 bedroom flat for sale',
-    mainImage:
-        'https://media.rightmove.co.uk/dir/crop/10:9-16:9/38k/37655/53588679/37655_CAM170036_IMG_01_0000_max_476x317.jpg',
-};
-
 const PropertyListing = () => {
+    const [properties, setProperties] = useState([]);
+
+    useEffect(() => {
+        fetch('http://localhost:3000/api/properties')
+            .then((response) => {
+                console.log(response, 'response');
+                // error handling if no response from api
+                if (!response.ok) {
+                    throw new Error('Error getting response');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setProperties(data);
+            })
+            // overall error handling if the request fails
+            .catch((error) => console.log('Error getting properties', error));
+        console.log(properties);
+    }, []);
+
     return (
         <ul className="PropertyListing">
-            {Array(5)
-                .fill(DUMMY_PROPERTY)
-                .map((property, index) => (
+            {properties.slice(0, 5).map((property, index) => {
+                return (
                     <li key={index}>
                         <PropertyCard {...property} />
                     </li>
-                ))}
+                );
+            })}
         </ul>
     );
 };
