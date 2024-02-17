@@ -6,6 +6,8 @@ const PropertyListing = () => {
     const [properties, setProperties] = useState([]);
 
     useEffect(() => {
+        // this can be refactored into a custom hook
+        // retrieve data from api
         fetch('http://localhost:3000/api/properties')
             .then((response) => {
                 console.log(response, 'response');
@@ -20,11 +22,11 @@ const PropertyListing = () => {
             })
             // overall error handling if the request fails
             .catch((error) => console.log('Error getting properties', error));
-        console.log(properties);
     }, []);
 
     return (
         <ul className="PropertyListing">
+            {/* this can be refactored into a pagination component (custom hook + component) */}
             {properties.slice(0, 5).map((property, index) => {
                 return (
                     <li key={index}>
